@@ -32,9 +32,11 @@ d. 主键应是有计算机自动生成的。
 
 sql: 添加主键约束，将UserId设为主键
 
-​         alter table UserId
+```mysql
+alter table UserId
 
-​         add constraint PK_UserId primary key (UserId);
+add constraint PK_UserId primary key (UserId);
+```
 
 ### 2.唯一约束：
 
@@ -42,9 +44,11 @@ sql: 添加主键约束，将UserId设为主键
 
 sql: 添加唯一约束，每个人的id不一样
 
-​       alter table UserInfo
+```mysql
+alter table UserInfo
 
-​       add constraint UQ_IDNumber unique (IdentityCardNumber);
+add constraint UQ_IDNumber unique (IdentityCardNumber);
+```
 
 ### 3.检查约束：
 
@@ -52,9 +56,11 @@ sql: 添加唯一约束，每个人的id不一样
 
 sql: 添加检查约束，对年龄范围加以限定
 
-​       alter table UserInfo
+```mysql
+alter table UserInfo
 
-​       add constraint CK_UserAge check (UserAge between 20 and 30)      
+add constraint CK_UserAge check (UserAge between 20 and 30)   
+```
 
 ### 4.默认约束：
 
@@ -62,9 +68,11 @@ sql: 添加检查约束，对年龄范围加以限定
 
 sql: 设置地址默认值
 
-​       alter table UserInfo
+```mysql
+alter table UserInfo
 
-​       add contraint DF_UserAddress default ('地址不详') for UserAddress;
+add contraint DF_UserAddress default ('地址不详') for UserAddress;
+```
 
 ### 5.外键约束：(不推荐，增加数据库开销)
 
@@ -72,15 +80,17 @@ sql: 设置地址默认值
 
 sql: 主表UserInfo和从表UserOrder建立关系，关联字段UserId
 
-​       alter table UserOrder
+```mysql
+alter table UserOrder
 
-​       add constraint FK_UserId 
+add constraint FK_UserId 
 
-​       foreign key(UserId) 
+foreign key(UserId) 
 
-​       references UserInfo(UserId) 
+references UserInfo(UserId) 
 
-​       on update/delete  restrict/cascade/set null/no action;
+on update/delete  restrict/cascade/set null/no action;
+```
 
 附：on delete/update 规则：cascade (操作主表的同时，操作外键表)
 
@@ -102,48 +112,77 @@ sql: 主表UserInfo和从表UserOrder建立关系，关联字段UserId
 
 ### 1. 交叉查询：（笛卡尔集，即两个表的乘积）
 
+```mysql
+select * from db1 and db2;
+```
+
 ### 2.自身连接查询：数据库自己连接自己
 
-sql: select A.property1, B.property1 from db A, db B where Condition
+```mysql
+select A.property1, B.property1 from db A, db B where Condition;
+```
 
 ### 3. 内连接查询：即两个表的交集
+
+```mysql
+select e.property1,d.property2
+from db e
+INNER JOIN db1 d
+ON Condition;
+```
 
 ### 4. 左外连接查询：左边表加两表交集
 
 即包含左表所有行，加没有匹配的对应右表部分全为空
 
-sql: select * from db left join db1 on Condition; 
+```mysql
+select * from db left join db1 on Condition; 
+```
 
 ### 5. 右外连接查询：右边表加两表交集C
 
 即包含右表所有行，加没有匹配的对应左表部分全为空
 
-sql: select * from db right join db1 on Condition;
+```mysql
+select * from db right join db1 on Condition;
+```
 
 ### 6.完全外连接查询： 包含full join左右两表中所有的行，
 
 如果右表中某行在左表中没有匹配，则结果中对应行右表的部分全部为空(NULL)，如果左表中某行在右表中没有匹配，则结果中对应行左表的部分全部为空(NULL) 
 
-sql: select * from db inner join db1 on Condition;
+```mysql
+select * from db inner join db1 on Condition;
+```
 
 ### 7. 子查询：即查询中还有查询 
 
-sql: select param1 from db where param2 in/>/</= (select param2 from db where param2 Condition);
+```mysql
+select param1 from db where param2 in/>/</= (select param2 from db where param2 Condition);
+```
 
 注：聚合函数不可以用在条件中
 
-注：带有exists的sql: select param1 from db where exists (...), exists 返回 true or false 。为提高效率，尽量用exists代替in, no exists代替not in,
+注：带有exists的sql: 
+
+```mysql
+select param1 from db where exists (...), exists;
+```
+
+ 返回 true or false 。为提高效率，尽量用exists代替in, no exists代替not in,
 
 注：集合运算的运算符：intersect 交集， union 并集， except 差集， union all 并集且不去除重复集
 
 注：减少对表的查询，如 ：
 
-SELECT TAB_NAME 
-FROM TABLES 
-WHERE  (TAB_NAME,DB_VER) 
-= ( SELECT TAB_NAME,DB_VER) 
-FROM TAB_COLUMNS 
-WHERE VERSION = 604
+```mysql
+`SELECT TAB_NAME` 
+`FROM TABLES` 
+`WHERE  (TAB_NAME,DB_VER)` 
+`= ( SELECT TAB_NAME,DB_VER)` 
+`FROM TAB_COLUMNS` 
+`WHERE Condition;
+```
 
 
 
